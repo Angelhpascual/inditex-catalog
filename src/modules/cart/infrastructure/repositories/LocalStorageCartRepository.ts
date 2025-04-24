@@ -27,7 +27,7 @@ export class LocalStorageCartRepository implements CartRepository {
 
   private serializeCart(cart: Cart): any {
     return {
-      items: cart.getItems().map(item => ({
+      items: cart.getItems().map((item) => ({
         id: item.id,
         phone: {
           id: item.phone.id,
@@ -38,18 +38,18 @@ export class LocalStorageCartRepository implements CartRepository {
           imageUrl: item.phone.imageUrl,
           colors: item.phone.colors,
           storageOptions: item.phone.storageOptions,
-          specifications: item.phone.specifications
+          specifications: item.phone.specifications,
         },
         colorId: item.colorId,
         storageId: item.storageId,
-        quantity: item.quantity
-      }))
+        quantity: item.quantity,
+      })),
     };
   }
 
   private deserializeCart(data: any): Cart {
     const cart = new Cart();
-    
+
     if (data.items && Array.isArray(data.items)) {
       data.items.forEach((item: any) => {
         if (item.phone) {
@@ -62,9 +62,9 @@ export class LocalStorageCartRepository implements CartRepository {
             item.phone.imageUrl,
             item.phone.colors,
             item.phone.storageOptions,
-            item.phone.specifications
+            item.phone.specifications,
           );
-          
+
           cart.addItem(phone, item.colorId, item.storageId);
           if (item.quantity > 1) {
             cart.updateQuantity(item.id, item.quantity);

@@ -4,8 +4,8 @@ import { PhoneFilters, PhoneRepository } from "../../domain/PhoneRepository"
 export interface SearchParams {
   query?: string
   brand?: string
-  sortBy?: 'price' | 'name' | 'brand'
-  order?: 'asc' | 'desc'
+  sortBy?: "price" | "name" | "brand"
+  order?: "asc" | "desc"
 }
 
 export class SearchPhonesUseCase {
@@ -55,21 +55,21 @@ export class SearchPhonesUseCase {
   }
 
   private sortPhones(
-    phones: Phone[], 
-    sortBy?: 'price' | 'name' | 'brand',
-    order: 'asc' | 'desc' = 'asc'
+    phones: Phone[],
+    sortBy?: "price" | "name" | "brand",
+    order: "asc" | "desc" = "asc"
   ): Phone[] {
     if (!sortBy) return phones
 
     return [...phones].sort((a, b) => {
-      const orderMultiplier = order === 'desc' ? -1 : 1
-      
+      const orderMultiplier = order === "desc" ? -1 : 1
+
       switch (sortBy) {
-        case 'price':
+        case "price":
           return (a.basePrice - b.basePrice) * orderMultiplier
-        case 'name':
-          return a.model.localeCompare(b.model) * orderMultiplier
-        case 'brand':
+        case "name":
+          return a.name.localeCompare(b.name) * orderMultiplier
+        case "brand":
           return a.brand.localeCompare(b.brand) * orderMultiplier
         default:
           return 0

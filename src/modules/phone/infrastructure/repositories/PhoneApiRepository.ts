@@ -1,179 +1,177 @@
-import {
-  Phone,
-  PhoneColor,
-  StorageOption,
-  Specifications,
-} from "../../domain/Phone"
+import { Phone, BasicPhoneData, DetailedPhoneData } from "../../domain/Phone"
 import { PhoneFilters, PhoneRepository } from "../../domain/PhoneRepository"
 
+let instance: PhoneApiRepository | null = null
+
 export class PhoneApiRepository implements PhoneRepository {
-  private readonly API_URL = import.meta.env.VITE_API_URL
-  private readonly API_KEY = import.meta.env.VITE_API_KEY
+  private readonly BASE_URL =
+    "https://prueba-tecnica-api-tienda-moviles.onrender.com"
+  private readonly API_KEY = "87909682e6cd74208f41a6ef39fe4191"
   private readonly MAX_PHONES = 20
 
-  private async fetchWithApiKey(endpoint: string) {
-    const response = await fetch(`${this.API_URL}${endpoint}`, {
-      headers: {
-        "x-api-key": this.API_KEY,
-      },
-    })
+  private constructor() {}
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`)
+  static getInstance(): PhoneApiRepository {
+    if (!instance) {
+      instance = new PhoneApiRepository()
     }
+    return instance
+  }
 
-    return response.json()
+  private async fetchWithApiKey(
+    endpoint: string,
+    params: Record<string, string> = {}
+  ) {
+    const queryParams = new URLSearchParams(params).toString()
+    const url = `${this.BASE_URL}${endpoint}${queryParams ? `?${queryParams}` : ""}`
+    console.log("Making request to:", url)
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          "x-api-key": this.API_KEY,
+        },
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("API key inválida")
+        }
+        if (response.status === 404) {
+          return null
+        }
+        throw new Error(`Error HTTP: ${response.status}`)
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error("Error en la petición:", error)
+      throw error
+    }
+  }
+
+  private removeDuplicates(data: any[]): any[] {
+    return data.filter(
+      (item, index, self) => index === self.findIndex((t) => t.id === item.id)
+    )
+  }
+
+  private ensureLimit(data: any[]): any[] {
+    // Si después de eliminar duplicados tenemos menos de MAX_PHONES,
+    // intentamos obtener más datos en una segunda llamada
+    if (data.length < this.MAX_PHONES) {
+      console.log(
+        `Se encontraron ${data.length} teléfonos únicos, intentando obtener más...`
+      )
+      return data
+    }
+    return data.slice(0, this.MAX_PHONES)
   }
 
   async findAll(): Promise<Phone[]> {
-    const data = await this.fetchWithApiKey("/phones")
-    return this.mapResponseToPhones(data).slice(0, this.MAX_PHONES)
+    try {
+      const params = {
+        limit: (this.MAX_PHONES + 5).toString(), // Pedimos algunos extra por si hay duplicados
+        offset: "0",
+      }
+      const data = await this.fetchWithApiKey("/products", params)
+      if (!Array.isArray(data)) {
+        console.error("La respuesta no es un array:", data)
+        return []
+      }
+
+      const uniqueData = this.removeDuplicates(data)
+      const limitedData = this.ensureLimit(uniqueData)
+      return limitedData.map((item) =>
+        Phone.fromBasicData(item as BasicPhoneData)
+      )
+    } catch (error) {
+      console.error("Error en findAll:", error)
+      return []
+    }
   }
 
   async findById(id: string): Promise<Phone | null> {
     try {
-      const data = await this.fetchWithApiKey(`/phones/${id}`)
-      return this.mapResponseToPhone(data)
+      const data = await this.fetchWithApiKey(`/products/${id}`)
+      if (!data) return null
+      return Phone.fromDetailedData(data as DetailedPhoneData)
     } catch (error) {
+      console.error("Error en findById:", error)
       return null
     }
   }
 
   async searchPhones(filters: PhoneFilters): Promise<Phone[]> {
-    const phones = await this.findAll()
-    return this.applyFilters(phones, filters)
-  }
+    try {
+      const params: Record<string, string> = {
+        limit: (this.MAX_PHONES + 5).toString(), // Pedimos algunos extra por si hay duplicados
+        offset: "0",
+      }
 
-  async findSimilarPhones(phone: Phone): Promise<Phone[]> {
-    const allPhones = await this.findAll()
-    return allPhones
-      .filter((p) => p.id !== phone.id && p.brand === phone.brand)
-      .slice(0, 3)
+      if (filters.query) {
+        params.search = filters.query
+      }
+
+      const data = await this.fetchWithApiKey("/products", params)
+      if (!Array.isArray(data)) {
+        console.error("La respuesta de búsqueda no es un array:", data)
+        return []
+      }
+
+      const uniqueData = this.removeDuplicates(data)
+      const limitedData = this.ensureLimit(uniqueData)
+      const phones = limitedData.map((item) =>
+        Phone.fromBasicData(item as BasicPhoneData)
+      )
+      return this.applyFilters(phones, filters)
+    } catch (error) {
+      console.error("Error en searchPhones:", error)
+      return []
+    }
   }
 
   async findByBrand(brand: string): Promise<Phone[]> {
-    const phones = await this.findAll()
-    return phones.filter(
-      (phone) => phone.brand.toLowerCase() === brand.toLowerCase()
+    const params = {
+      search: brand,
+      limit: (this.MAX_PHONES + 5).toString(),
+      offset: "0",
+    }
+    const data = await this.fetchWithApiKey("/products", params)
+    if (!Array.isArray(data)) {
+      console.error("La respuesta de búsqueda por marca no es un array:", data)
+      return []
+    }
+    const uniqueData = this.removeDuplicates(data)
+    const limitedData = this.ensureLimit(uniqueData)
+    return limitedData.map((item) =>
+      Phone.fromBasicData(item as BasicPhoneData)
     )
   }
 
   async countResults(filters: PhoneFilters): Promise<number> {
     const phones = await this.searchPhones(filters)
-    return phones.length
+    return Math.min(phones.length, this.MAX_PHONES) // Aseguramos que el total no exceda MAX_PHONES
   }
 
   private applyFilters(phones: Phone[], filters: PhoneFilters): Phone[] {
     return phones.filter((phone) => {
-      if (
-        filters.brand &&
-        !phone.brand.toLowerCase().includes(filters.brand.toLowerCase())
-      ) {
-        return false
-      }
-
-      if (filters.query) {
-        const query = filters.query.toLowerCase()
-        const matchesName = phone.model.toLowerCase().includes(query)
-        const matchesBrand = phone.brand.toLowerCase().includes(query)
-        if (!matchesName && !matchesBrand) {
-          return false
-        }
-      }
-
       if (
         filters.minPrice !== undefined &&
         phone.basePrice < filters.minPrice
       ) {
         return false
       }
-
       if (
         filters.maxPrice !== undefined &&
         phone.basePrice > filters.maxPrice
       ) {
         return false
       }
-
       return true
     })
-  }
-
-  private mapResponseToPhones(data: any[]): Phone[] {
-    return data.map(this.mapResponseToPhone)
-  }
-
-  private mapResponseToPhone(data: any): Phone {
-    return new Phone(
-      data.id,
-      data.brand,
-      data.model,
-      data.description || "",
-      data.price,
-      data.imgUrl,
-      this.mapColors(data.colors, data.imgUrl),
-      this.mapStorageOptions(data.storage, data.price),
-      this.mapSpecifications(data)
-    )
-  }
-
-  private mapColors(colors: string[], defaultImage: string): PhoneColor[] {
-    return colors.map((color, index) => ({
-      id: `color-${index}`,
-      name: color,
-      hex: this.getColorHex(color),
-      imageUrl: defaultImage, // En este caso usamos la misma imagen para todos los colores
-    }))
-  }
-
-  private mapStorageOptions(
-    options: string[],
-    basePrice: number
-  ): StorageOption[] {
-    return options.map((capacity, index) => ({
-      id: `storage-${index}`,
-      capacity,
-      priceIncrement: this.calculatePriceIncrement(capacity, basePrice),
-    }))
-  }
-
-  private mapSpecifications(data: any): Specifications {
-    return {
-      screen: data.screen || "",
-      processor: data.processor || "",
-      ram: data.ram || "",
-      os: data.os || "",
-      battery: data.battery || "",
-      cameras: data.cameras || [],
-      dimensions: data.dimensions || "",
-      weight: data.weight || "",
-      network: data.networkTechnology ? [data.networkTechnology] : [],
-    }
-  }
-
-  private getColorHex(colorName: string): string {
-    const colorMap: Record<string, string> = {
-      black: "#000000",
-      white: "#FFFFFF",
-      red: "#FF0000",
-      blue: "#0000FF",
-      green: "#00FF00",
-      yellow: "#FFFF00",
-      purple: "#800080",
-      pink: "#FFC0CB",
-      gold: "#FFD700",
-      silver: "#C0C0C0",
-      gray: "#808080",
-    }
-
-    return colorMap[colorName.toLowerCase()] || "#000000"
-  }
-
-  private calculatePriceIncrement(capacity: string, basePrice: number): number {
-    const sizeInGB = parseInt(capacity)
-    if (isNaN(sizeInGB)) return 0
-
-    // Incremento del precio basado en la capacidad
-    return Math.floor((sizeInGB / 64) * basePrice * 0.1)
   }
 }
