@@ -1,27 +1,28 @@
-import { useEffect, useState } from "react";
-import { Cart } from "../../modules/cart/domain/Cart";
-import { LocalStorageCartRepository } from "../../modules/cart/infrastructure/repositories/LocalStorageCartRepository";
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { Cart } from "../../modules/cart/domain/Cart"
+import { LocalStorageCartRepository } from "../../modules/cart/infrastructure/repositories/LocalStorageCartRepository"
 
 export const Navbar = () => {
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [cartItemsCount, setCartItemsCount] = useState(0)
 
   useEffect(() => {
     const loadCart = async () => {
-      const cartRepository = new LocalStorageCartRepository();
-      const cart: Cart = await cartRepository.load();
-      setCartItemsCount(cart.getItems().length);
-    };
+      const cartRepository = new LocalStorageCartRepository()
+      const cart: Cart = await cartRepository.load()
+      setCartItemsCount(cart.getItems().length)
+    }
 
-    loadCart();
-  }, []);
+    loadCart()
+  }, [])
 
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <a href="/" className="logo">
+        <Link to="/" className="logo">
           Phone Catalog
-        </a>
-        <a href="/cart" className="cart-icon">
+        </Link>
+        <Link to="/cart" className="cart-icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -38,8 +39,8 @@ export const Navbar = () => {
           {cartItemsCount > 0 && (
             <span className="cart-count">{cartItemsCount}</span>
           )}
-        </a>
+        </Link>
       </div>
     </nav>
-  );
-};
+  )
+}

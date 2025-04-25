@@ -10,32 +10,6 @@ export class PhoneApiRepository implements PhoneRepository {
   private readonly MAX_PHONES = 20
 
   private constructor() {}
-  async findSimilarPhones(phone: Phone): Promise<Phone[]> {
-    try {
-      const params = {
-        search: phone.brand,
-        limit: (this.MAX_PHONES + 5).toString(),
-        offset: "0",
-      }
-      const data = await this.fetchWithApiKey("/products", params)
-      if (!Array.isArray(data)) {
-        console.error(
-          "La respuesta de búsqueda de similares no es un array:",
-          data
-        )
-        return []
-      }
-
-      const uniqueData = this.removeDuplicates(data)
-      const limitedData = this.ensureLimit(uniqueData)
-      return limitedData
-        .filter((item) => item.id !== phone.id)
-        .map((item) => Phone.fromBasicData(item as BasicPhoneData))
-    } catch (error) {
-      console.error("Error en findSimilarPhones:", error)
-      return []
-    }
-  }
 
   static getInstance(): PhoneApiRepository {
     if (!instance) {
@@ -86,8 +60,6 @@ export class PhoneApiRepository implements PhoneRepository {
   }
 
   private ensureLimit(data: any[]): any[] {
-    // Si después de eliminar duplicados tenemos menos de MAX_PHONES,
-    // intentamos obtener más datos en una segunda llamada
     if (data.length < this.MAX_PHONES) {
       console.log(
         `Se encontraron ${data.length} teléfonos únicos, intentando obtener más...`
@@ -100,7 +72,7 @@ export class PhoneApiRepository implements PhoneRepository {
   async findAll(): Promise<Phone[]> {
     try {
       const params = {
-        limit: (this.MAX_PHONES + 5).toString(), // Pedimos algunos extra por si hay duplicados
+        limit: (this.MAX_PHONES + 5).toString(),
         offset: "0",
       }
       const data = await this.fetchWithApiKey("/products", params)
@@ -134,7 +106,7 @@ export class PhoneApiRepository implements PhoneRepository {
   async searchPhones(filters: PhoneFilters): Promise<Phone[]> {
     try {
       const params: Record<string, string> = {
-        limit: (this.MAX_PHONES + 5).toString(), // Pedimos algunos extra por si hay duplicados
+        limit: (this.MAX_PHONES + 5).toString(),
         offset: "0",
       }
 
@@ -178,9 +150,36 @@ export class PhoneApiRepository implements PhoneRepository {
     )
   }
 
+  async findSimilarPhones(phone: Phone): Promise<Phone[]> {
+    try {
+      const params = {
+        search: phone.brand,
+        limit: (this.MAX_PHONES + 5).toString(),
+        offset: "0",
+      }
+      const data = await this.fetchWithApiKey("/products", params)
+      if (!Array.isArray(data)) {
+        console.error(
+          "La respuesta de búsqueda de similares no es un array:",
+          data
+        )
+        return []
+      }
+
+      const uniqueData = this.removeDuplicates(data)
+      const limitedData = this.ensureLimit(uniqueData)
+      return limitedData
+        .filter((item) => item.id !== phone.id)
+        .map((item) => Phone.fromBasicData(item as BasicPhoneData))
+    } catch (error) {
+      console.error("Error en findSimilarPhones:", error)
+      return []
+    }
+  }
+
   async countResults(filters: PhoneFilters): Promise<number> {
     const phones = await this.searchPhones(filters)
-    return Math.min(phones.length, this.MAX_PHONES) // Aseguramos que el total no exceda MAX_PHONES
+    return Math.min(phones.length, this.MAX_PHONES)
   }
 
   private applyFilters(phones: Phone[], filters: PhoneFilters): Phone[] {
