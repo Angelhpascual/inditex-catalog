@@ -10,6 +10,32 @@ export class PhoneApiRepository implements PhoneRepository {
   private readonly MAX_PHONES = 20
 
   private constructor() {}
+  async findSimilarPhones(phone: Phone): Promise<Phone[]> {
+    try {
+      const params = {
+        search: phone.brand,
+        limit: (this.MAX_PHONES + 5).toString(),
+        offset: "0",
+      }
+      const data = await this.fetchWithApiKey("/products", params)
+      if (!Array.isArray(data)) {
+        console.error(
+          "La respuesta de búsqueda de similares no es un array:",
+          data
+        )
+        return []
+      }
+
+      const uniqueData = this.removeDuplicates(data)
+      const limitedData = this.ensureLimit(uniqueData)
+      return limitedData
+        .filter((item) => item.id !== phone.id)
+        .map((item) => Phone.fromBasicData(item as BasicPhoneData))
+    } catch (error) {
+      console.error("Error en findSimilarPhones:", error)
+      return []
+    }
+  }
 
   static getInstance(): PhoneApiRepository {
     if (!instance) {
