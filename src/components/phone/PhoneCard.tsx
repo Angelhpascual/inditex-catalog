@@ -1,4 +1,5 @@
 import { Phone } from "../../modules/phone/domain/Phone"
+import { Link } from "react-router-dom"
 import "../../styles/phones.css"
 
 interface PhoneCardProps {
@@ -7,7 +8,7 @@ interface PhoneCardProps {
 
 export const PhoneCard = ({ phone }: PhoneCardProps) => {
   return (
-    <a href={`/phone/${phone.id}`} className="phone-card">
+    <Link to={`/phones/${phone.id}`} className="phone-card">
       <img
         src={phone.imageUrl}
         alt={phone.name}
@@ -18,6 +19,6 @@ export const PhoneCard = ({ phone }: PhoneCardProps) => {
         <h2 className="phone-card__model">{phone.name}</h2>
         <div className="phone-card__price">{phone.basePrice}€</div>
       </div>
-    </a>
+    </Link>
   )
 }
