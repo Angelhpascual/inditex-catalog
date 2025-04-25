@@ -1,13 +1,13 @@
-import { Phone } from "../../domain/Phone"
-import { PhoneRepository } from "../../domain/PhoneRepository"
+import { Phone } from "../../domain/Phone";
+import { PhoneRepository } from "../../domain/PhoneRepository";
 
 export interface PhoneDetail {
-  phone: Phone | null
-  similarPhones: Phone[]
-  selectedColor?: string
-  selectedStorage?: string
-  currentImage?: string
-  currentPrice?: number
+  phone: Phone | null;
+  similarPhones: Phone[];
+  selectedColor?: string;
+  selectedStorage?: string;
+  currentImage?: string;
+  currentPrice?: number;
 }
 
 export class GetPhoneDetailUseCase {
@@ -16,18 +16,18 @@ export class GetPhoneDetailUseCase {
   async execute(
     id: string,
     colorId?: string,
-    storageId?: string
+    storageId?: string,
   ): Promise<PhoneDetail> {
-    const phone = await this.phoneRepository.findById(id)
+    const phone = await this.phoneRepository.findById(id);
 
     if (!phone) {
       return {
         phone: null,
         similarPhones: [],
-      }
+      };
     }
 
-    const similarPhones = await this.phoneRepository.findSimilarPhones(phone)
+    const similarPhones = await this.phoneRepository.findSimilarPhones(phone);
 
     return {
       phone,
@@ -36,14 +36,14 @@ export class GetPhoneDetailUseCase {
       selectedStorage: storageId,
       currentImage: colorId ? phone.getImageForColor(colorId) : phone.imageUrl,
       currentPrice: storageId ? phone.getPrice(storageId) : phone.basePrice,
-    }
+    };
   }
 
   canAddToCart(detail: PhoneDetail): boolean {
-    if (!detail.phone) return false
+    if (!detail.phone) return false;
     return detail.phone.canAddToCart(
       detail.selectedColor ?? "",
-      detail.selectedStorage ?? ""
-    )
+      detail.selectedStorage ?? "",
+    );
   }
 }

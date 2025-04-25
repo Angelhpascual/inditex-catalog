@@ -1,6 +1,6 @@
-import { Cart } from "./Cart"
+import { Cart } from "./Cart";
 
 export interface CartRepository {
-  save(cart: Cart): Promise<void>
-  load(): Promise<Cart>
+  save(cart: Cart): Promise<void>;
+  load(): Promise<Cart>;
 }
