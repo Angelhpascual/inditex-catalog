@@ -28,7 +28,6 @@ export interface SimilarProduct {
   imageUrl: string
 }
 
-// Interfaz básica que coincide con la respuesta del listado
 export interface BasicPhoneData {
   id: string
   brand: string
@@ -37,7 +36,6 @@ export interface BasicPhoneData {
   imageUrl: string
 }
 
-// Interfaz detallada que coincide con la respuesta del detalle
 export interface DetailedPhoneData extends BasicPhoneData {
   description: string
   rating: number

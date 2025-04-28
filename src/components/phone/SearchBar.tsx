@@ -23,7 +23,10 @@ export const SearchBar = ({ onSearch, totalResults }: SearchBarProps) => {
     if (searchTerm.length < MIN_SEARCH_LENGTH) {
       return "Introduce al menos 2 caracteres para buscar"
     }
-    return `${totalResults} ${totalResults === 1 ? "resultado" : "resultados"} encontrados`
+    if (totalResults === 1) {
+      return "1 resultado encontrado"
+    }
+    return `${totalResults} resultados encontrados`
   }
 
   return (

@@ -1,33 +1,33 @@
-import { Phone } from "../../phone/domain/Phone";
+import { Phone } from "../../phone/domain/Phone"
 
 export interface CartItem {
-  id: string;
-  phone: Phone;
-  colorId: string;
-  storageId: string;
-  quantity: number;
+  id: string
+  phone: Phone
+  colorId: string
+  storageId: string
+  quantity: number
 }
 
 export class Cart {
-  private items: CartItem[] = [];
+  private items: CartItem[] = []
 
   addItem(phone: Phone, colorId: string, storageId: string): void {
     if (!phone.canAddToCart(colorId, storageId)) {
       throw new Error(
-        "Cannot add phone to cart without color and storage selection",
-      );
+        "Cannot add phone to cart without color and storage selection"
+      )
     }
 
     const existingItem = this.items.find(
       (item) =>
         item.phone.id === phone.id &&
         item.colorId === colorId &&
-        item.storageId === storageId,
-    );
+        item.storageId === storageId
+    )
 
     if (existingItem) {
-      existingItem.quantity += 1;
-      return;
+      existingItem.quantity += 1
+      return
     }
 
     this.items.push({
@@ -36,39 +36,43 @@ export class Cart {
       colorId,
       storageId,
       quantity: 1,
-    });
+    })
   }
 
   removeItem(itemId: string): void {
-    const index = this.items.findIndex((item) => item.id === itemId);
+    const index = this.items.findIndex((item) => item.id === itemId)
     if (index !== -1) {
-      this.items.splice(index, 1);
+      this.items.splice(index, 1)
     }
   }
 
   updateQuantity(itemId: string, quantity: number): void {
-    const item = this.items.find((item) => item.id === itemId);
-    if (item && quantity > 0) {
-      item.quantity = quantity;
+    const item = this.items.find((item) => item.id === itemId)
+    if (item) {
+      if (quantity > 0) {
+        item.quantity = quantity
+      } else {
+        this.removeItem(itemId)
+      }
     }
   }
 
   getItems(): CartItem[] {
-    return [...this.items];
+    return [...this.items]
   }
 
   getTotalPrice(): number {
     return this.items.reduce((total, item) => {
-      const itemPrice = item.phone.getPrice(item.storageId);
-      return total + itemPrice * item.quantity;
-    }, 0);
+      const itemPrice = item.phone.getPrice(item.storageId)
+      return total + itemPrice * item.quantity
+    }, 0)
   }
 
   clear(): void {
-    this.items = [];
+    this.items = []
   }
 
   get isEmpty(): boolean {
-    return this.items.length === 0;
+    return this.items.length === 0
   }
 }

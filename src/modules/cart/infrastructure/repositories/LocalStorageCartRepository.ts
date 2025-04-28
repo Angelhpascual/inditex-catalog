@@ -3,11 +3,16 @@ import { CartRepository } from "../../domain/CartRepository"
 import { Phone } from "../../../phone/domain/Phone"
 
 export class LocalStorageCartRepository implements CartRepository {
-  private readonly STORAGE_KEY = "shopping-cart"
+  private readonly STORAGE_KEY = "cart"
 
   async save(cart: Cart): Promise<void> {
-    const serializedCart = this.serializeCart(cart)
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializedCart))
+    try {
+      const serializedCart = this.serializeCart(cart)
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializedCart))
+    } catch (error) {
+      console.error("Error saving cart to localStorage:", error)
+      throw new Error("Failed to save cart")
+    }
   }
 
   async load(): Promise<Cart> {
@@ -23,6 +28,15 @@ export class LocalStorageCartRepository implements CartRepository {
       console.error("Error loading cart from localStorage:", error)
       localStorage.removeItem(this.STORAGE_KEY)
       return new Cart()
+    }
+  }
+
+  async clear(): Promise<void> {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY)
+    } catch (error) {
+      console.error("Error clearing cart from localStorage:", error)
+      throw new Error("Failed to clear cart")
     }
   }
 
@@ -53,9 +67,9 @@ export class LocalStorageCartRepository implements CartRepository {
   private deserializeCart(data: any): Cart {
     const cart = new Cart()
 
-    if (data.items && Array.isArray(data.items)) {
+    if (data?.items && Array.isArray(data.items)) {
       data.items.forEach((item: any) => {
-        if (item.phone && item.colorId && item.storageId) {
+        if (item?.phone && item.colorId && item.storageId) {
           try {
             const phone = new Phone(
               item.phone.id,
