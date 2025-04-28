@@ -7,7 +7,7 @@ Catálogo de teléfonos móviles desarrollado con React, TypeScript y Vite.
 ### Prerrequisitos
 
 - Node.js >= 18
-- pnpm (recomendado) o npm
+- pnpm (recomendado)
 
 ### Instalación
 
