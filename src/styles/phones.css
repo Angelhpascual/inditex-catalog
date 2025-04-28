@@ -1,0 +1,159 @@
+.phones-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 var(--spacing-large);
+  box-sizing: border-box;
+}
+
+.phones-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-large);
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.phone-card {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.phone-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.phone-card__image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: #f8f8f8;
+  padding: var(--spacing-medium);
+}
+
+.phone-card__content {
+  padding: var(--spacing-medium);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.phone-card__brand {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-small);
+}
+
+.phone-card__model {
+  font-weight: bold;
+  margin-bottom: var(--spacing-medium);
+  font-size: 1.1rem;
+}
+
+.phone-card__price {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Estilos para la barra de búsqueda */
+.search-container {
+  width: 100%;
+  padding: 0 var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  box-sizing: border-box;
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: var(--spacing-large);
+  display: flex;
+  gap: var(--spacing-medium);
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-family: var(--font-family);
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.search-input::placeholder {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.search-results {
+  text-align: center;
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  min-height: 1.5em;
+  padding: var(--spacing-small) 0;
+}
+
+.loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: #ff0000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.retry-button {
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+.retry-button:hover {
+  opacity: 0.9;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+}
