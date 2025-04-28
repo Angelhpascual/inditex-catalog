@@ -1,142 +1,129 @@
-# Phone Catalog
+# Inditex Product Catalog
 
-Catálogo de teléfonos móviles desarrollado con React, TypeScript y Vite.
+A modern web application built with React, TypeScript, and Vite for browsing and managing phone products, featuring a shopping cart functionality and clean architecture.
 
-## 🚀 Inicio Rápido
+## 🚀 Features
 
-### Prerrequisitos
+- Product catalog browsing
+- Search functionality
+- Product details view
+- Shopping cart management
+- Local storage persistence
+- Clean Architecture implementation
+- Comprehensive test coverage
 
-- Node.js >= 18
-- pnpm (recomendado)
+## 🛠️ Tech Stack
 
-### Instalación
+- React 18
+- TypeScript
+- Vite
+- Vitest for testing
+- CSS for styling
+- Clean Architecture pattern
+
+## 📦 Installation
+
+1. Clone the repository:
 
 ```bash
-# Clonar el repositorio
-git clone [url-del-repositorio]
-
-# Instalar dependencias
-pnpm install
-
-# Variables de entorno
-cp .env.example .env
-# Editar .env y agregar tu API_KEY
+git clone [repository-url]
+cd inditex-catalog
 ```
 
-### Scripts Disponibles
+2. Install dependencies using pnpm:
 
-- `pnpm dev`: Inicia el servidor de desarrollo
-- `pnpm build`: Construye la aplicación para producción
-- `pnpm test`: Ejecuta los tests
-- `pnpm lint`: Ejecuta el linter
+```bash
+pnpm install
+```
 
-## 🏗 Arquitectura
+## 🚀 Running the Application
 
-El proyecto sigue los principios de Clean Architecture y Domain-Driven Design (DDD):
+### Development mode
+
+```bash
+pnpm dev
+```
+
+This will start the development server at `http://localhost:5173`
+
+### Build for production
+
+```bash
+pnpm build
+```
+
+### Run tests
+
+```bash
+pnpm test
+```
+
+## 🏗️ Project Structure
 
 ```
 src/
-├── modules/          # Módulos de dominio
-│   ├── phone/       # Módulo de teléfonos
-│   │   ├── application/    # Casos de uso
-│   │   ├── domain/        # Entidades y repos
-│   │   └── infrastructure/ # Implementaciones
-│   └── cart/        # Módulo de carrito
-├── components/      # Componentes React
-└── context/        # Contextos de React
+├── components/         # React components
+│   ├── cart/          # Cart related components
+│   ├── layout/        # Layout components
+│   ├── phone/         # Phone related components
+│   └── ui/            # Reusable UI components
+├── context/           # React context providers
+├── modules/           # Clean Architecture modules
+│   ├── cart/         # Cart module
+│   │   ├── application/
+│   │   ├── domain/
+│   │   └── infrastructure/
+│   └── phone/        # Phone module
+│       ├── application/
+│       ├── domain/
+│       └── infrastructure/
+└── styles/           # CSS styles
 ```
 
-### Patrones y Decisiones
+## 🏗️ Architecture
 
-- **Clean Architecture**: Separación en capas (domain, application, infrastructure)
-- **Context API**: Gestión del estado global con React Context
-- **Repository Pattern**: Abstracción del acceso a datos
-- **Use Cases**: Lógica de negocio encapsulada en casos de uso
+This project follows Clean Architecture principles with three main layers:
 
-## 🎨 Características Técnicas
+- **Domain Layer**: Contains business logic and entities
+- **Application Layer**: Contains use cases and business rules
+- **Infrastructure Layer**: Contains implementations of repositories and external services
 
-- **Frontend**: React 19 con TypeScript
-- **Build**: Vite para desarrollo y producción
-- **Testing**: Vitest para pruebas unitarias
-- **State**: React Context API para estado global
-- **Autenticación**: API Key en headers
-- **Estilos**: CSS Modules con variables CSS
-- **Linting**: ESLint con configuración TypeScript
+## 💾 Data Persistence
 
-## 📱 Responsive Design
+- Shopping cart data is persisted using LocalStorage
+- Product data is fetched from an API
 
-- Grid system adaptativo
-- Media queries para diferentes breakpoints
-- Unidades relativas (rem, em)
-- Diseño mobile-first
+## 🧪 Testing
 
-## ♿ Accesibilidad
+The project includes comprehensive tests for:
 
-- Elementos HTML semánticos
-- Atributos ARIA cuando necesario
-- Alto contraste en textos
-- Navegación por teclado
-- Estados interactivos claros
+- Components (using Vitest)
+- Use Cases
+- Repositories
+- Domain entities
 
-## 🔧 Desarrollo
+Run tests with:
 
-El proyecto tiene dos modos principales:
-
-- **Desarrollo**: Assets sin minificar, hot reload
-- **Producción**: Assets optimizados y minificados
-
-## 📚 Documentación API
-
-La API requiere autenticación mediante `x-api-key` en los headers:
-
-```typescript
-headers: {
-  'x-api-key': process.env.VITE_API_KEY
-}
+```bash
+pnpm test
 ```
 
-## Expanding the ESLint configuration
+## 🔧 Configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The application can be configured through various configuration files:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- `vite.config.ts` - Vite configuration
+- `tsconfig.json` - TypeScript configuration
+- `eslint.config.js` - ESLint configuration
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🤝 Contributing
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x"
-import reactDom from "eslint-plugin-react-dom"
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details
