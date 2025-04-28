@@ -1,18 +1,21 @@
 .phone-detail {
-  padding: var(--spacing-large);
+  padding: var(--spacing-medium);
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 }
 
 .phone-detail__header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-xlarge);
+  margin-top: var(--spacing-medium);
   margin-bottom: var(--spacing-xlarge);
 }
 
 .phone-detail__image-container {
   position: relative;
+  z-index: 1;
 }
 
 .phone-detail__image {
@@ -289,4 +292,112 @@
   font-size: 1rem;
   font-weight: bold;
   color: var(--primary-color);
+}
+
+.back-button {
+  margin-top: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: var(--border-color);
+}
+
+/* Media Queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .phone-detail {
+    padding: var(--spacing-medium);
+  }
+
+  .phone-detail__header {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-large);
+  }
+
+  .phone-detail__image {
+    max-height: 400px;
+    width: 100%;
+  }
+
+  .phone-detail__info {
+    padding: 0;
+  }
+
+  .phone-detail__name {
+    font-size: 1.5rem;
+  }
+
+  .phone-detail__price {
+    font-size: 1.25rem;
+  }
+
+  .phone-detail__specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-detail__storage {
+    flex-wrap: wrap;
+  }
+
+  .storage-option {
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .add-to-cart-button {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .color-options {
+    justify-content: center;
+  }
+
+  .similar-phones-grid {
+    gap: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .similar-phone-card {
+    width: 140px;
+  }
+
+  .similar-phone-image {
+    height: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .phone-detail {
+    padding: var(--spacing-small);
+  }
+
+  .phone-detail__image {
+    max-height: 300px;
+  }
+
+  .phone-detail__name {
+    font-size: 1.25rem;
+  }
+
+  .similar-phone-card {
+    width: 120px;
+  }
+
+  .similar-phone-image {
+    height: 120px;
+  }
 }

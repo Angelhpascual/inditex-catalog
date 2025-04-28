@@ -96,6 +96,10 @@ const PhoneDetail = () => {
 
   return (
     <div className="phone-detail">
+      <Link to="/" className="back-button">
+        ← Back
+      </Link>
+      
       <div className="phone-detail__header">
         <div className="phone-detail__image-container">
           <img
