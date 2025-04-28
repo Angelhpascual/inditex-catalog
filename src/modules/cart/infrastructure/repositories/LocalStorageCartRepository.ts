@@ -21,7 +21,7 @@ export class LocalStorageCartRepository implements CartRepository {
       return this.deserializeCart(cartData)
     } catch (error) {
       console.error("Error loading cart from localStorage:", error)
-      localStorage.removeItem(this.STORAGE_KEY) // Limpiar el carrito corrupto
+      localStorage.removeItem(this.STORAGE_KEY)
       return new Cart()
     }
   }
@@ -71,7 +71,6 @@ export class LocalStorageCartRepository implements CartRepository {
               item.phone.similarProducts || []
             )
 
-            // Verificar que el color y storage existan en las opciones del teléfono
             if (phone.canAddToCart(item.colorId, item.storageId)) {
               cart.addItem(phone, item.colorId, item.storageId)
               if (item.quantity > 1) {
@@ -80,7 +79,6 @@ export class LocalStorageCartRepository implements CartRepository {
             }
           } catch (error) {
             console.error("Error deserializing cart item:", error)
-            // Continuar con el siguiente item si hay error
           }
         }
       })

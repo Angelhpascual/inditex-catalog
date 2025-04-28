@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
+import { toast } from "sonner"
 import { PhoneApiRepository } from "../modules/phone/infrastructure/repositories/PhoneApiRepository"
 import { GetPhoneDetailUseCase } from "../modules/phone/application/use-cases/GetPhoneDetailUseCase"
-import { LocalStorageCartRepository } from "../modules/cart/infrastructure/repositories/LocalStorageCartRepository"
-import { ManageCartUseCase } from "../modules/cart/application/use-cases/ManageCartUseCase"
 import { Phone } from "../modules/phone/domain/Phone"
+import { useCart } from "../context/CartContext"
 import "../styles/phoneDetail.css"
 
 const phoneRepository = PhoneApiRepository.getInstance()
 const getPhoneDetailUseCase = new GetPhoneDetailUseCase(phoneRepository)
-const cartRepository = new LocalStorageCartRepository()
-const manageCartUseCase = new ManageCartUseCase(cartRepository)
 
 const PhoneDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -23,6 +21,8 @@ const PhoneDetail = () => {
   const [similarPhones, setSimilarPhones] = useState<Phone[]>([])
   const [addingToCart, setAddingToCart] = useState(false)
   const [addToCartError, setAddToCartError] = useState<string | null>(null)
+
+  const { addToCart } = useCart()
 
   useEffect(() => {
     const loadPhoneDetail = async () => {
@@ -76,11 +76,14 @@ const PhoneDetail = () => {
     try {
       setAddingToCart(true)
       setAddToCartError(null)
-      await manageCartUseCase.addToCart(phone, selectedColor, selectedStorage)
-      alert("Producto añadido al carrito")
+      await addToCart(phone, selectedColor, selectedStorage)
+      toast.success("Producto añadido al carrito", {
+        description: `${phone.name} - ${selectedColor}, ${selectedStorage}`,
+      })
     } catch (err) {
       console.error("Error adding to cart:", err)
       setAddToCartError("Error al añadir al carrito")
+      toast.error("Error al añadir al carrito")
     } finally {
       setAddingToCart(false)
     }
