@@ -2,11 +2,15 @@ import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { PhoneApiRepository } from "../modules/phone/infrastructure/repositories/PhoneApiRepository"
 import { GetPhoneDetailUseCase } from "../modules/phone/application/use-cases/GetPhoneDetailUseCase"
+import { LocalStorageCartRepository } from "../modules/cart/infrastructure/repositories/LocalStorageCartRepository"
+import { ManageCartUseCase } from "../modules/cart/application/use-cases/ManageCartUseCase"
 import { Phone } from "../modules/phone/domain/Phone"
 import "../styles/phoneDetail.css"
 
 const phoneRepository = PhoneApiRepository.getInstance()
 const getPhoneDetailUseCase = new GetPhoneDetailUseCase(phoneRepository)
+const cartRepository = new LocalStorageCartRepository()
+const manageCartUseCase = new ManageCartUseCase(cartRepository)
 
 const PhoneDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -17,17 +21,19 @@ const PhoneDetail = () => {
   const [selectedStorage, setSelectedStorage] = useState<string>("")
   const [currentPrice, setCurrentPrice] = useState<number>(0)
   const [similarPhones, setSimilarPhones] = useState<Phone[]>([])
+  const [addingToCart, setAddingToCart] = useState(false)
+  const [addToCartError, setAddToCartError] = useState<string | null>(null)
 
   useEffect(() => {
     const loadPhoneDetail = async () => {
       if (!id) return
-      
+
       try {
         setLoading(true)
         setError(null)
-        
+
         const detail = await getPhoneDetailUseCase.execute(id)
-        
+
         if (!detail.phone) {
           setError("Teléfono no encontrado")
           return
@@ -35,7 +41,7 @@ const PhoneDetail = () => {
 
         setPhone(detail.phone)
         setSimilarPhones(detail.similarPhones)
-        
+
         // Establecer valores iniciales para color y almacenamiento
         if (detail.phone.colorOptions.length > 0) {
           setSelectedColor(detail.phone.colorOptions[0].name)
@@ -57,9 +63,34 @@ const PhoneDetail = () => {
     loadPhoneDetail()
   }, [id])
 
+  const handleAddToCart = async () => {
+    if (!phone || addingToCart) return
+
+    if (!selectedColor || !selectedStorage) {
+      setAddToCartError(
+        "Por favor, selecciona un color y capacidad de almacenamiento"
+      )
+      return
+    }
+
+    try {
+      setAddingToCart(true)
+      setAddToCartError(null)
+      await manageCartUseCase.addToCart(phone, selectedColor, selectedStorage)
+      alert("Producto añadido al carrito")
+    } catch (err) {
+      console.error("Error adding to cart:", err)
+      setAddToCartError("Error al añadir al carrito")
+    } finally {
+      setAddingToCart(false)
+    }
+  }
+
   if (loading) return <div className="loading">Cargando...</div>
   if (error) return <div className="error-message">{error}</div>
   if (!phone) return <div className="error-message">Teléfono no encontrado</div>
+
+  const canAddToCart = selectedColor && selectedStorage && !addingToCart
 
   return (
     <div className="phone-detail">
@@ -113,19 +144,32 @@ const PhoneDetail = () => {
                 </div>
               </div>
             )}
+
+            <div className="phone-detail__cart-section">
+              <button
+                className={`add-to-cart-button ${!canAddToCart ? "disabled" : ""}`}
+                onClick={handleAddToCart}
+                disabled={!canAddToCart}
+              >
+                {addingToCart ? "Añadiendo..." : "Añadir al carrito"}
+              </button>
+              {addToCartError && (
+                <div className="error-message">{addToCartError}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="phone-detail__specs">
         <h2>Especificaciones</h2>
-        <div className="specs-grid">
+        <div className="phone-detail__specs-grid">
           {Object.entries(phone.specs).map(([key, value]) => (
-            <div key={key} className="spec-item">
-              <div className="spec-label">
+            <div key={key} className="phone-detail__spec-item">
+              <div className="phone-detail__spec-label">
                 {key.replace(/([A-Z])/g, " $1").trim()}
               </div>
-              <div className="spec-value">{value}</div>
+              <div className="phone-detail__spec-value">{value}</div>
             </div>
           ))}
         </div>
@@ -147,7 +191,9 @@ const PhoneDetail = () => {
                   className="similar-phone-image"
                 />
                 <div className="similar-phone-info">
-                  <div className="similar-phone-brand">{similarPhone.brand}</div>
+                  <div className="similar-phone-brand">
+                    {similarPhone.brand}
+                  </div>
                   <div className="similar-phone-name">{similarPhone.name}</div>
                   <div className="similar-phone-price">
                     ${similarPhone.basePrice}
