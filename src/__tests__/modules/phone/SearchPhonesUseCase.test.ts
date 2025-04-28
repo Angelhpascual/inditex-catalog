@@ -4,14 +4,12 @@ import { Phone } from "../../../modules/phone/domain/Phone"
 import { PhoneRepository } from "../../../modules/phone/domain/PhoneRepository"
 
 describe("SearchPhonesUseCase", () => {
-  // Mock de teléfonos para pruebas
   const mockPhones = [
     new Phone("1", "Apple", "iPhone 13", 999, "url1"),
     new Phone("2", "Samsung", "Galaxy S21", 899, "url2"),
     new Phone("3", "Apple", "iPhone 12", 799, "url3"),
   ]
 
-  // Crear un mock del repositorio
   const mockRepository = {
     searchPhones: vi.fn(),
     countResults: vi.fn(),
@@ -21,10 +19,8 @@ describe("SearchPhonesUseCase", () => {
     findByBrand: vi.fn(),
   }
 
-  // Tipado del repositorio mock
   const repository: PhoneRepository = mockRepository
 
-  // Instanciar el caso de uso con el repositorio mock
   const searchPhonesUseCase = new SearchPhonesUseCase(repository)
 
   beforeEach(() => {
