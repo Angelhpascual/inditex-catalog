@@ -4,7 +4,7 @@ import { PhoneGrid } from "./components/phone/PhoneGrid"
 import PhoneDetail from "./components/PhoneDetail"
 import { CartView } from "./components/cart/CartView"
 import { CartProvider } from "./context/CartContext"
-import { Toaster } from 'sonner'
+import { Toaster } from "sonner"
 
 function App() {
   return (
