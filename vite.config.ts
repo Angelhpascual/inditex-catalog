@@ -5,10 +5,10 @@ import react from "@vitejs/plugin-react"
 export default defineConfig(({ command, mode }) => {
   const config = {
     plugins: [react()],
-    base: '/',
+    base: "/",
   }
 
-  if (command === 'serve') {
+  if (command === "serve") {
     // Configuración específica para desarrollo
     return {
       ...config,
@@ -24,12 +24,12 @@ export default defineConfig(({ command, mode }) => {
       ...config,
       build: {
         sourcemap: false,
-        minify: 'esbuild',
+        minify: "esbuild",
         chunkSizeWarningLimit: 1000,
         rollupOptions: {
           output: {
             manualChunks: {
-              vendor: ['react', 'react-dom'],
+              vendor: ["react", "react-dom"],
             },
           },
         },

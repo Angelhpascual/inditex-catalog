@@ -76,7 +76,8 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-color);
-  background: var(--background-color);
+  background: #000000;
+  color: #ffffff;
   border-radius: var(--border-radius);
   cursor: pointer;
   font-size: 1.2rem;
@@ -84,14 +85,16 @@
 }
 
 .cart-item__quantity button:disabled {
+  background: #808080;
+  color: #ffffff;
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 .cart-item__quantity button:hover:not(:disabled) {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 
 .cart-item__quantity span {
