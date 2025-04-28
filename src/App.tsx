@@ -15,7 +15,7 @@ function App() {
           <Route path="/phones/:id" element={<PhoneDetail />} />
           <Route path="/cart" element={<CartView />} />
         </Routes>
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-center" richColors />
       </Layout>
     </CartProvider>
   )
