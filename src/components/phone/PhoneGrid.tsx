@@ -38,10 +38,9 @@ export const PhoneGrid = () => {
     }
   }, [])
 
-  // Usar useEffect una sola vez para la carga inicial
   useEffect(() => {
     loadPhones()
-  }, []) // Quitar loadPhones de las dependencias intencionalmente
+  }, [])
 
   const handleSearch = useCallback(
     (query: string) => {

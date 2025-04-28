@@ -1,17 +1,14 @@
 :root {
-  /* Variables para colores */
   --primary-color: #000;
   --secondary-color: #666;
   --background-color: #fff;
   --border-color: #ddd;
-  --text-color: #000;  /* Color específico para texto */
+  --text-color: #000;
 
-  /* Variables para espaciado */
   --spacing-small: 0.5rem;
   --spacing-medium: 1rem;
   --spacing-large: 2rem;
 
-  /* Variables para tipografía */
   --font-family: Helvetica, Arial, sans-serif;
 }
 

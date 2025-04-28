@@ -42,7 +42,6 @@ const PhoneDetail = () => {
         setPhone(detail.phone)
         setSimilarPhones(detail.similarPhones)
 
-        // Establecer valores iniciales para color y almacenamiento
         if (detail.phone.colorOptions.length > 0) {
           setSelectedColor(detail.phone.colorOptions[0].name)
         }
