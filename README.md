@@ -2,6 +2,10 @@
 
 A modern web application built with React, TypeScript, and Vite for browsing and managing phone products, featuring a shopping cart functionality and clean architecture.
 
+## 🌐 Demo
+
+Check out the live demo: [Inditex Catalog](https://inditex-catalog.vercel.app/)
+
 ## 🚀 Features
 
 - Product catalog browsing
