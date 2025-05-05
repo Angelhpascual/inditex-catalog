@@ -8,7 +8,7 @@ export const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-content">
         <Link to="/" className="logo">
-          Phone Catalog
+          <img src="/assets/Logo.png" alt="Inditex" />
         </Link>
         <Link to="/cart" className="cart-icon">
           <svg
@@ -26,9 +26,9 @@ export const Navbar = () => {
             <line x1="3" y1="6" x2="21" y2="6" />
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg>
-          {cart && cart.getItems().length > 0 && (
-            <span className="cart-count">{cart.getItems().length}</span>
-          )}
+          <span className="cart-count">
+            ({cart ? cart.getItems().length : 0})
+          </span>
         </Link>
       </div>
     </nav>

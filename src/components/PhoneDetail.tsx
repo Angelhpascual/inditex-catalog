@@ -97,43 +97,28 @@ const PhoneDetail = () => {
   return (
     <div className="phone-detail">
       <Link to="/" className="back-button">
-        ← Back
+        ← BACK
       </Link>
-      
-      <div className="phone-detail__header">
-        <div className="phone-detail__image-container">
-          <img
-            src={phone.getImageForColor(selectedColor) || phone.imageUrl}
-            alt={phone.name}
-            className="phone-detail__image"
-          />
+
+      <div className="phone-detail__content">
+        <div className="phone-detail__left-column">
+          <div className="phone-detail__image-container">
+            <img
+              src={phone.getImageForColor(selectedColor) || phone.imageUrl}
+              alt={phone.name}
+              className="phone-detail__image"
+            />
+          </div>
         </div>
 
-        <div className="phone-detail__info">
-          <div className="phone-detail__brand">{phone.brand}</div>
-          <h1 className="phone-detail__name">{phone.name}</h1>
-          <p className="phone-detail__description">{phone.description}</p>
-          <div className="phone-detail__price">${currentPrice}</div>
+        <div className="phone-detail__right-column">
+          <div className="phone-detail__info">
+            <h1 className="phone-detail__name">{phone.name.toUpperCase()}</h1>
+            <div className="phone-detail__price">{currentPrice} EUR</div>
 
-          <div className="phone-detail__options">
-            <div className="phone-detail__colors">
-              <h3>Colores disponibles:</h3>
-              <div className="color-options">
-                {phone.colorOptions.map((color) => (
-                  <div
-                    key={color.name}
-                    className={`color-option ${selectedColor === color.name ? "active" : ""}`}
-                    style={{ backgroundColor: color.hexCode }}
-                    onClick={() => setSelectedColor(color.name)}
-                    title={color.name}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {phone.storageOptions.length > 0 && (
+            <div className="phone-detail__options">
               <div className="phone-detail__storage">
-                <h3>Almacenamiento:</h3>
+                <h3>STORAGE (HOW MUCH SPACE DO YOU NEED?)</h3>
                 <div className="storage-options">
                   {phone.storageOptions.map((storage) => (
                     <button
@@ -149,15 +134,30 @@ const PhoneDetail = () => {
                   ))}
                 </div>
               </div>
-            )}
 
-            <div className="phone-detail__cart-section">
+              <div className="phone-detail__colors">
+                <h3>COLOR. PICK YOUR FAVORITE</h3>
+                <div className="color-options">
+                  {phone.colorOptions.map((color) => (
+                    <div key={color.name} className="color-option-container">
+                      <button
+                        className={`color-option ${selectedColor === color.name ? "active" : ""}`}
+                        style={{ backgroundColor: color.hexCode }}
+                        onClick={() => setSelectedColor(color.name)}
+                        title={color.name}
+                      />
+                      <span className="color-name">{color.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <button
                 className={`add-to-cart-button ${!canAddToCart ? "disabled" : ""}`}
                 onClick={handleAddToCart}
                 disabled={!canAddToCart}
               >
-                {addingToCart ? "Añadiendo..." : "Añadir al carrito"}
+                AÑADIR
               </button>
               {addToCartError && (
                 <div className="error-message">{addToCartError}</div>
@@ -167,23 +167,28 @@ const PhoneDetail = () => {
         </div>
       </div>
 
-      <div className="phone-detail__specs">
-        <h2>Especificaciones</h2>
-        <div className="phone-detail__specs-grid">
-          {Object.entries(phone.specs).map(([key, value]) => (
-            <div key={key} className="phone-detail__spec-item">
-              <div className="phone-detail__spec-label">
-                {key.replace(/([A-Z])/g, " $1").trim()}
-              </div>
-              <div className="phone-detail__spec-value">{value}</div>
-            </div>
-          ))}
-        </div>
+      <div className="phone-detail__specifications">
+        <h3>SPECIFICATIONS</h3>
+        <table className="specifications-table">
+          <tbody>
+            {Object.entries(phone.specs).map(([key, value]) => (
+              <tr key={key} className="specification-row">
+                <td className="specification-label">
+                  {key
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()
+                    .toUpperCase()}
+                </td>
+                <td className="specification-value">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {similarPhones.length > 0 && (
         <div className="similar-phones">
-          <h2>Productos similares</h2>
+          <h2>Similar items</h2>
           <div className="similar-phones-grid">
             {similarPhones.map((similarPhone) => (
               <Link
@@ -197,12 +202,9 @@ const PhoneDetail = () => {
                   className="similar-phone-image"
                 />
                 <div className="similar-phone-info">
-                  <div className="similar-phone-brand">
-                    {similarPhone.brand}
-                  </div>
                   <div className="similar-phone-name">{similarPhone.name}</div>
                   <div className="similar-phone-price">
-                    ${similarPhone.basePrice}
+                    From {similarPhone.basePrice} EUR
                   </div>
                 </div>
               </Link>

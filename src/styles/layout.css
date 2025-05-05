@@ -7,6 +7,7 @@
 
 .main-content {
   flex: 1;
+  margin: 0 auto;
   width: 100%;
   max-width: 100%;
   padding: var(--spacing-large) 0;
@@ -14,50 +15,103 @@
 
 .navbar {
   width: 100%;
-  padding: var(--spacing-medium) var(--spacing-large);
+  height: 72px;
   background-color: var(--background-color);
   border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-content {
   width: 100%;
-  margin: 0;
-  padding: var(--spacing-medium) var(--spacing-large);
+  max-width: 1440px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--container-padding-desktop);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 32px;
+  width: auto;
+  display: block;
 }
 
 .cart-icon {
-  position: relative;
-  text-decoration: none;
-  color: var(--primary-color);
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: var(--primary-color);
+  position: relative;
+  padding: 8px;
+  margin: -8px;
+}
+
+.cart-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff0000;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+@media (max-width: 1024px) {
+  .navbar-content {
+    padding: 0 var(--container-padding-tablet);
+  }
+
+  .main-content {
+    padding: var(--spacing-medium) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    height: 64px;
+  }
+
+  .navbar-content {
+    padding: 0 var(--container-padding-mobile);
+  }
+
+  .logo img {
+    height: 24px;
+  }
+
+  .cart-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .cart-count {
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 56px;
+  }
+
+  .logo img {
+    height: 20px;
+  }
+
+  .main-content {
+    padding: var(--spacing-small) 0;
+  }
 }
