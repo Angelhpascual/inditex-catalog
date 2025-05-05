@@ -9,6 +9,14 @@
   --spacing-medium: 1rem;
   --spacing-large: 2rem;
 
+  --container-padding-desktop: 64px;
+  --container-padding-tablet: 32px;
+  --container-padding-mobile: 16px;
+
+  --breakpoint-tablet: 1024px;
+  --breakpoint-mobile: 768px;
+  --breakpoint-small: 480px;
+
   --font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -33,4 +41,9 @@ body {
   font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--text-color);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }

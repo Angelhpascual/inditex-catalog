@@ -21,12 +21,12 @@ export const SearchBar = ({ onSearch, totalResults }: SearchBarProps) => {
   const getSearchMessage = () => {
     if (!searchTerm) return ""
     if (searchTerm.length < MIN_SEARCH_LENGTH) {
-      return "Introduce al menos 2 caracteres para buscar"
+      return "Enter at least 2 characters to search"
     }
     if (totalResults === 1) {
-      return "1 resultado encontrado"
+      return "1 result"
     }
-    return `${totalResults} resultados encontrados`
+    return `${totalResults} results`
   }
 
   return (
@@ -35,7 +35,7 @@ export const SearchBar = ({ onSearch, totalResults }: SearchBarProps) => {
         <input
           type="text"
           className="search-input"
-          placeholder="Buscar por nombre o marca..."
+          placeholder="Search for a smartphone..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
